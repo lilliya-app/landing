@@ -268,12 +268,12 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
   }
 
   // waitlist — set ENDPOINT to your Formspree URL to collect real emails
-  var ENDPOINT = '';
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyGgCW6eR32vagQ_wJfLgWDfPM1x5XkWVj8OUvAMXrpTFuvzOehOiLA4VbcCGn2Z4p7/exec';
   var em = document.getElementById('em'), fz = document.getElementById('formzone');
   function submit(e){
     e.preventDefault();
     if(!em.value || (em.validity && !em.validity.valid)){ em.focus(); return; }
-    if(ENDPOINT){ fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em.value})}).catch(function(){}); }
+    if(ENDPOINT){ fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em.value})}).catch(function(){}); }
     fz.classList.add('sent');
   }
   document.getElementById('form').addEventListener('submit', submit);
