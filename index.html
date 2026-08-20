@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preload" href="assets/garamond-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/parisienne-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/noise-a.png" as="image" type="image/png">
 <title>Lilliya iOS App - Your baby's digital sound garden</title>
 <style>
 @font-face{font-family:'EB Garamond';font-style:normal;font-weight:400;font-display:swap;src:url(assets/garamond-400.woff2) format('woff2');}
@@ -20,22 +21,39 @@ body::after{content:"";position:fixed;inset:0;z-index:30;pointer-events:none;mix
  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' seed='21'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.88  0 0 0 0 0.86  0 0 0 0 0.78  0 0 0 0.07 0.93'/%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23b)'/%3E%3C/svg%3E");}
 body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
  background:radial-gradient(130% 100% at 50% 30%, rgba(255,255,255,0) 55%, rgba(120,105,70,.07) 100%);}
-.runway{height:460vh;}
+.runway{height:360vh;}
 
 /* ---------- fixed wordmark ---------- */
 .brand{position:fixed;top:4svh;left:0;right:0;text-align:center;z-index:20;pointer-events:none;}
 .brand .wm{display:block;font-family:'Parisienne',cursive;font-size:clamp(38px,4vw,54px);line-height:1;color:var(--ink);}
 .brand .sub{display:block;margin-top:7px;font-size:clamp(10px,.95vw,12px);letter-spacing:.4em;color:var(--soft);text-transform:uppercase;font-family:'EB Garamond',serif;}
 
-/* ---------- scenes ---------- */
-.scene{position:fixed;inset:0;pointer-events:none;}
+/* ---------- scenes ----------
+   The perlin reveal is a pre-rendered noise field (assets/noise-*.png) used as
+   a CSS mask. Nothing is computed at runtime; the animation only
+   slides the mask window, so no per-frame filter work hits the main thread. */
+.scene{position:fixed;inset:0;pointer-events:none;visibility:hidden;
+ -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+ -webkit-mask-size:100% 300%;mask-size:100% 300%;}
+.scene.in,.scene.out{visibility:visible;will-change:mask-position;}
+.scene.in{-webkit-mask-image:url(assets/noise-a.png);mask-image:url(assets/noise-a.png);
+ animation:reveal var(--rev,1250ms) cubic-bezier(.32,.72,.3,1) both;}
+.scene.out{-webkit-mask-image:url(assets/noise-b.png);mask-image:url(assets/noise-b.png);
+ animation:conceal 700ms cubic-bezier(.5,0,.72,.35) both;}
+/* first scene lands quicker — get the words up and readable */
+.s1.in{--rev:800ms;}
+/* reveal finished: drop the mask entirely so nothing keeps compositing */
+.scene.settled{-webkit-mask-image:none;mask-image:none;animation:none;will-change:auto;}
+@keyframes reveal{
+ from{-webkit-mask-position:0 0;mask-position:0 0;}
+ to{-webkit-mask-position:0 100%;mask-position:0 100%;}}
+@keyframes conceal{
+ from{-webkit-mask-position:0 100%;mask-position:0 100%;}
+ to{-webkit-mask-position:0 0;mask-position:0 0;}}
+
 .inner{position:absolute;inset:0;max-width:1500px;margin:0 auto;}
 .txt{position:absolute;left:8%;top:50%;transform:translateY(-50%);width:min(44vw,600px);
  font-size:clamp(30px,3.4vw,52px);font-weight:400;line-height:1.42;color:var(--ink);}
-.txt{filter:var(--dv);}
-.s1 .txt,.s1 .flw img{filter:url(#dv1);}
-.s2 .txt,.s2 .flw img{filter:url(#dv2);}
-.s3 .txt,.s3 .flw img,.s3 .formzone,.s3 .chips,.s3 .foot{filter:url(#dv3);}
 
 .flw{position:absolute;pointer-events:none;}
 .greens{position:fixed;left:-2vw;right:-2vw;bottom:-1vh;z-index:0;pointer-events:none;opacity:.45;display:flex;}
@@ -62,14 +80,14 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
 .formzone{position:absolute;left:8%;top:58%;width:min(44vw,560px);pointer-events:none;}
 .s3.live .formzone{pointer-events:auto;}
 .formrow{display:flex;gap:18px;align-items:stretch;}
-.emailwrap{position:relative;flex:1.25;height:clamp(50px,5.6vw,64px);}
-.emailwrap>svg{position:absolute;inset:0;width:100%;height:100%;}
+.emailwrap{position:relative;flex:1.25;height:clamp(50px,5.6vw,64px);
+ background:url(assets/field.svg) 0 0/100% 100% no-repeat;}
 .emailwrap input{position:absolute;inset:12% 9%;background:transparent;border:none;outline:none;
  font-family:'EB Garamond',serif;font-size:clamp(16px,1.5vw,20px);color:#3c4a6b;}
 .emailwrap input::placeholder{color:#9aa3b8;}
-.joinbtn{position:relative;flex:1;height:clamp(50px,5.6vw,64px);background:none;border:none;cursor:pointer;
+.joinbtn{position:relative;flex:1;height:clamp(50px,5.6vw,64px);border:none;cursor:pointer;
+ background:url(assets/btn.svg) 0 0/100% 100% no-repeat;
  display:flex;align-items:center;justify-content:center;transition:transform .4s ease;}
-.joinbtn>svg{position:absolute;inset:0;width:100%;height:100%;}
 .joinbtn span{position:relative;font-family:'EB Garamond',serif;font-weight:500;
  font-size:clamp(16px,1.55vw,21px);color:#fff;letter-spacing:.04em;text-shadow:0 1px 4px rgba(120,20,80,.35);}
 .joinbtn:hover{transform:scale(1.03) rotate(-.4deg);}
@@ -80,9 +98,9 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
 .sent .formrow{opacity:0;pointer-events:none;transition:opacity .6s;}
 
 .chips{position:absolute;left:8%;top:73%;display:flex;gap:16px;flex-wrap:wrap;pointer-events:none;}
-.chip{position:relative;height:42px;padding:0 20px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;}
+.chip{position:relative;height:42px;padding:0 20px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+ background:url(assets/chip.svg) 0 0/100% 100% no-repeat;}
 .chip i{font-style:normal;font-family:'EB Garamond',serif;font-weight:500;font-size:clamp(13px,1.05vw,15px);letter-spacing:.06em;color:var(--ink);}
-.chip .pbox{position:absolute;inset:0;width:100%;height:100%;}
 .chip .ht{width:14px;height:11px;flex:none;position:relative;}
 
 .foot a{color:inherit;text-decoration:none;border-bottom:1.5px solid rgba(76,88,120,.55);}
@@ -117,44 +135,13 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
 
 @media (prefers-reduced-motion:reduce){
  .sway,.sway.b,.sway.c{animation:none;}
+ .scene,.scene.in,.scene.out{-webkit-mask-image:none;mask-image:none;animation:none;}
  .hint{display:none;}
 }
 </style>
+<script src="assets/main.js" defer></script>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <filter id="dv1" x="-6%" y="-6%" width="112%" height="112%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="3" seed="7" result="n"/>
-      <feComponentTransfer in="n" result="m">
-        <feFuncR type="discrete" tableValues="1"/><feFuncG type="discrete" tableValues="1"/><feFuncB type="discrete" tableValues="1"/>
-        <feFuncA id="fa1" type="linear" slope="14" intercept="-14"/>
-      </feComponentTransfer>
-      <feComposite in="SourceGraphic" in2="m" operator="in"/>
-    </filter>
-    <filter id="dv2" x="-6%" y="-6%" width="112%" height="112%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="3" seed="19" result="n"/>
-      <feComponentTransfer in="n" result="m">
-        <feFuncR type="discrete" tableValues="1"/><feFuncG type="discrete" tableValues="1"/><feFuncB type="discrete" tableValues="1"/>
-        <feFuncA id="fa2" type="linear" slope="14" intercept="-14"/>
-      </feComponentTransfer>
-      <feComposite in="SourceGraphic" in2="m" operator="in"/>
-    </filter>
-    <filter id="dv3" x="-6%" y="-6%" width="112%" height="112%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.013" numOctaves="3" seed="31" result="n"/>
-      <feComponentTransfer in="n" result="m">
-        <feFuncR type="discrete" tableValues="1"/><feFuncG type="discrete" tableValues="1"/><feFuncB type="discrete" tableValues="1"/>
-        <feFuncA id="fa3" type="linear" slope="14" intercept="-14"/>
-      </feComponentTransfer>
-      <feComposite in="SourceGraphic" in2="m" operator="in"/>
-    </filter>
-    <filter id="uiwob" x="-8%" y="-15%" width="116%" height="130%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.05" numOctaves="2" seed="6" result="n"/>
-      <feDisplacementMap in="SourceGraphic" in2="n" scale="4"/>
-    </filter>
-  </defs>
-</svg>
 
 <div class="brand"><span class="wm">lilliya</span><span class="sub">iOS app</span></div>
 
@@ -162,7 +149,7 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
 
 <div class="greens" id="greens" aria-hidden="true"><img src="assets/greens.webp" width="906" height="384" decoding="async" alt=""><img src="assets/greens.webp" width="906" height="384" decoding="async" style="transform:scaleX(-1)" alt=""></div>
 
-<section class="scene s1" id="s1">
+<section class="scene s1 in" id="s1">
   <div class="inner">
     <div class="txt">Your voice is their favorite sound in the world.</div>
     <div class="flw cone sway"><img src="assets/cone.webp" width="764" height="1041" decoding="async" alt="a cluster of pink watercolor cosmos"></div>
@@ -184,19 +171,9 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
     <div class="formzone" id="formzone">
       <form class="formrow" id="form">
         <span class="emailwrap">
-          <svg viewBox="0 0 430 88" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M28 12 C 120 7 330 6 402 13 C 422 17 426 34 424 46 C 423 66 410 76 380 78 C 290 84 120 83 44 78 C 16 75 6 62 7 44 C 8 26 14 14 28 12 Z"
-                  fill="none" stroke="#2E4470" stroke-width="2.6" stroke-linecap="round" filter="url(#uiwob)"/>
-          </svg>
           <input id="em" type="email" autocomplete="email" placeholder="your email" aria-label="your email" required>
         </span>
         <button class="joinbtn" id="join" type="submit">
-          <svg viewBox="0 0 340 88" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M30 16 C 110 10 250 10 314 17 C 330 22 333 36 331 45 C 330 61 320 70 296 72 C 220 78 96 77 40 72 C 18 69 9 58 10 44 C 11 29 17 18 30 16 Z"
-                  fill="#D6318A" opacity=".52" filter="url(#uiwob)"/>
-            <path d="M26 12 C 112 6 256 6 318 13 C 336 18 339 35 337 46 C 336 65 324 75 298 77 C 218 83 92 82 36 77 C 13 74 4 61 5 44 C 6 27 12 14 26 12 Z"
-                  fill="none" stroke="#2E4470" stroke-width="2.6" stroke-linecap="round" filter="url(#uiwob)"/>
-          </svg>
           <span>join the waitlist</span>
         </button>
       </form>
@@ -204,9 +181,9 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
     </div>
 
     <div class="chips">
-      <span class="chip"><svg class="pbox" viewBox="0 0 240 56" preserveAspectRatio="none" aria-hidden="true"><path d="M22 8 C 80 4 175 4 220 9 C 233 13 236 24 234 30 C 233 43 224 49 206 50 C 152 55 66 54 28 50 C 12 47 5 39 6 28 C 7 17 12 10 22 8 Z" fill="none" stroke="#2E4470" stroke-width="2" stroke-linecap="round" filter="url(#uiwob)"/></svg><i>forever ad-free</i><svg class="ht" viewBox="0 0 20 16"><path d="M10 5 C 8 1 3 2 3 6 C 3 9 6 11 10 14 C 14 11 17 9 17 6 C 17 2 12 1 10 5 Z" fill="none" stroke="#2E4470" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-      <span class="chip"><svg class="pbox" viewBox="0 0 240 56" preserveAspectRatio="none" aria-hidden="true"><path d="M22 8 C 80 4 175 4 220 9 C 233 13 236 24 234 30 C 233 43 224 49 206 50 C 152 55 66 54 28 50 C 12 47 5 39 6 28 C 7 17 12 10 22 8 Z" fill="none" stroke="#2E4470" stroke-width="2" stroke-linecap="round" filter="url(#uiwob)"/></svg><i>low stimulation</i><svg class="ht" viewBox="0 0 20 16"><path d="M10 5 C 8 1 3 2 3 6 C 3 9 6 11 10 14 C 14 11 17 9 17 6 C 17 2 12 1 10 5 Z" fill="none" stroke="#2E4470" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-      <span class="chip"><svg class="pbox" viewBox="0 0 240 56" preserveAspectRatio="none" aria-hidden="true"><path d="M22 8 C 80 4 175 4 220 9 C 233 13 236 24 234 30 C 233 43 224 49 206 50 C 152 55 66 54 28 50 C 12 47 5 39 6 28 C 7 17 12 10 22 8 Z" fill="none" stroke="#2E4470" stroke-width="2" stroke-linecap="round" filter="url(#uiwob)"/></svg><i>private to your family</i><svg class="ht" viewBox="0 0 20 16"><path d="M10 5 C 8 1 3 2 3 6 C 3 9 6 11 10 14 C 14 11 17 9 17 6 C 17 2 12 1 10 5 Z" fill="none" stroke="#2E4470" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="chip"><i>forever ad-free</i><svg class="ht" viewBox="0 0 20 16"><path d="M10 5 C 8 1 3 2 3 6 C 3 9 6 11 10 14 C 14 11 17 9 17 6 C 17 2 12 1 10 5 Z" fill="none" stroke="#2E4470" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="chip"><i>low stimulation</i><svg class="ht" viewBox="0 0 20 16"><path d="M10 5 C 8 1 3 2 3 6 C 3 9 6 11 10 14 C 14 11 17 9 17 6 C 17 2 12 1 10 5 Z" fill="none" stroke="#2E4470" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <span class="chip"><i>private to your family</i><svg class="ht" viewBox="0 0 20 16"><path d="M10 5 C 8 1 3 2 3 6 C 3 9 6 11 10 14 C 14 11 17 9 17 6 C 17 2 12 1 10 5 Z" fill="none" stroke="#2E4470" stroke-width="1.6" stroke-linecap="round"/></svg></span>
     </div>
 
     <div class="flw corner sway"><img src="assets/corner.webp" width="614" height="1100" decoding="async" alt="dark red thistles and goldenrod"></div>
@@ -216,72 +193,6 @@ body::before{content:"";position:fixed;inset:0;z-index:29;pointer-events:none;
 
 <div class="hint" id="hint">scroll</div>
 
-<script>
-(function(){
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fa = [document.getElementById('fa1'), document.getElementById('fa2'), document.getElementById('fa3')];
-  var s3 = document.getElementById('s3'), hint = document.getElementById('hint');
-  var P = [
-    [document.querySelector('.s1 .txt'), -26], [document.querySelector('.s1 .flw.cone'), -70],
-    [document.querySelector('.s2 .txt'), -26], [document.querySelector('.s2 .flw.gold'), -80], [document.querySelector('.s2 .flw.pops'), 24],
-    [document.querySelector('.s3 .txt'), -20], [document.querySelector('.s3 .flw.corner'), -60],
-    [document.getElementById('greens'), 26]
-  ];
 
-  function ramp(g, a, b){ var t=(g-a)/(b-a); return t<0?0:t>1?1:t*t*(3-2*t); }
-  function setDissolve(i, t){ fa[i].setAttribute('intercept', (-14 + t*15.5).toFixed(3)); }
-
-  var intro = 0, introStart = null;
-  function tickIntro(ts){
-    if(introStart===null) introStart = ts;
-    intro = Math.min(1, (ts-introStart)/2400);
-    render();
-    if(intro < 1) requestAnimationFrame(tickIntro);
-  }
-
-  function render(){
-    var max = document.documentElement.scrollHeight - innerHeight;
-    var g = max>0 ? scrollY/max : 0;
-    var t1 = Math.min(intro, 1 - ramp(g, 0.14, 0.34));
-    var t2 = ramp(g, 0.30, 0.50) * (1 - ramp(g, 0.58, 0.76));
-    var t3 = ramp(g, 0.70, 0.90);
-    setDissolve(0, t1); setDissolve(1, t2); setDissolve(2, t3);
-    for (var i = 0; i < P.length; i++) P[i][0].style.translate = '0 ' + (g * P[i][1]).toFixed(1) + 'px';
-    s3.classList.toggle('live', t3 > 0.85);
-    hint.classList.toggle('gone', g > 0.9 || (g > 0.03 && false) );
-    hint.classList.toggle('gone', g > 0.9);
-  }
-
-  if(reduce){
-    // static fallback: land on the final scene, fully visible
-    setDissolve(0, 0); setDissolve(1, 0); setDissolve(2, 1);
-    s3.classList.add('live');
-    document.getElementById('runway').style.height = '100svh';
-    document.querySelector('.s1').style.display = 'none';
-    document.querySelector('.s2').style.display = 'none';
-    hint.style.display = 'none';
-  } else {
-    var ticking = false;
-    addEventListener('scroll', function(){
-      if(ticking) return; ticking = true;
-      requestAnimationFrame(function(){ render(); ticking = false; });
-    }, {passive:true});
-    setDissolve(1, 0); setDissolve(2, 0);
-    requestAnimationFrame(tickIntro);
-  }
-
-  // waitlist — set ENDPOINT to your Formspree URL to collect real emails
-  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyGgCW6eR32vagQ_wJfLgWDfPM1x5XkWVj8OUvAMXrpTFuvzOehOiLA4VbcCGn2Z4p7/exec';
-  var em = document.getElementById('em'), fz = document.getElementById('formzone');
-  function submit(e){
-    e.preventDefault();
-    if(!em.value || (em.validity && !em.validity.valid)){ em.focus(); return; }
-    if(ENDPOINT){ fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({email:em.value})}).catch(function(){}); }
-    fz.classList.add('sent');
-  }
-  document.getElementById('form').addEventListener('submit', submit);
-  document.getElementById('join').addEventListener('click', submit);
-})();
-</script>
 </body>
 </html>
