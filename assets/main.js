@@ -77,12 +77,19 @@
     S[0].style.display = S[1].style.display = 'none';
     S[0].classList.remove('in');
     S[2].classList.add('in', 'settled', 'live');
-    document.getElementById('runway').style.height = '100svh';
+    document.getElementById('runway').style.height = '100lvh';
     hint.style.display = 'none';
   } else {
     measure();
     addEventListener('scroll', wake, { passive: true });
-    addEventListener('resize', function () { measure(); last = -1; wake(); }, { passive: true });
+    // A collapsing mobile URL bar fires resize with a height-only change. Acting
+    // on it would move the scroll span under us and jitter the triggers, so only
+    // a real width change counts as a relayout.
+    var w = innerWidth;
+    addEventListener('resize', function () {
+      if (innerWidth === w) return;
+      w = innerWidth; measure(); last = -1; wake();
+    }, { passive: true });
     wake();
   }
 
