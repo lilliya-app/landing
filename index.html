@@ -36,26 +36,18 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100vh;heig
 
 /* ---------- scenes ----------
    The perlin reveal is a pre-rendered noise field (assets/noise-*.png) used as
-   a CSS mask. Nothing is computed at runtime; the animation only
-   slides the mask window, so no per-frame filter work hits the main thread. */
+   a CSS mask, scrubbed by scroll progress. Nothing is computed at runtime — a
+   frame only slides the mask window, so no filter work hits the main thread. */
 .scene{pointer-events:none;visibility:hidden;
+ -webkit-mask-image:url(assets/noise-a.png);mask-image:url(assets/noise-a.png);
  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
- -webkit-mask-size:100% 300%;mask-size:100% 300%;}
-.scene.in,.scene.out{visibility:visible;will-change:mask-position;}
-.scene.in{-webkit-mask-image:url(assets/noise-a.png);mask-image:url(assets/noise-a.png);
- animation:reveal var(--rev,1250ms) cubic-bezier(.32,.72,.3,1) both;}
-.scene.out{-webkit-mask-image:url(assets/noise-b.png);mask-image:url(assets/noise-b.png);
- animation:conceal 700ms cubic-bezier(.5,0,.72,.35) both;}
-/* first scene lands quicker — get the words up and readable */
-.s1.in{--rev:800ms;}
-/* reveal finished: drop the mask entirely so nothing keeps compositing */
-.scene.settled{-webkit-mask-image:none;mask-image:none;animation:none;will-change:auto;}
-@keyframes reveal{
- from{-webkit-mask-position:0 0;mask-position:0 0;}
- to{-webkit-mask-position:0 100%;mask-position:0 100%;}}
-@keyframes conceal{
- from{-webkit-mask-position:0 100%;mask-position:0 100%;}
- to{-webkit-mask-position:0 0;mask-position:0 0;}}
+ -webkit-mask-size:100% 300%;mask-size:100% 300%;
+ -webkit-mask-position:0 0;mask-position:0 0;}
+.s2{-webkit-mask-image:url(assets/noise-b.png);mask-image:url(assets/noise-b.png);}
+/* mid-dissolve: on screen, mask-position driven from scroll progress */
+.scene.on{visibility:visible;will-change:mask-position;}
+/* fully revealed: drop the mask so a settled scene costs nothing to composite */
+.scene.full{-webkit-mask-image:none;mask-image:none;will-change:auto;}
 
 .inner{position:absolute;inset:0;max-width:1500px;margin:0 auto;}
 .txt{position:absolute;left:8%;top:50%;transform:translateY(-50%);width:min(44vw,600px);
@@ -142,7 +134,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100vh;heig
 
 @media (prefers-reduced-motion:reduce){
  .sway,.sway.b,.sway.c{animation:none;}
- .scene,.scene.in,.scene.out{-webkit-mask-image:none;mask-image:none;animation:none;}
+ .scene{-webkit-mask-image:none;mask-image:none;}
  .hint{display:none;}
 }
 </style>
@@ -156,7 +148,7 @@ body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100vh;heig
 
 <div class="vp greens" id="greens" aria-hidden="true"><img src="assets/greens.webp" width="906" height="384" decoding="async" alt=""><img src="assets/greens.webp" width="906" height="384" decoding="async" style="transform:scaleX(-1)" alt=""></div>
 
-<section class="vp scene s1 in" id="s1">
+<section class="vp scene s1 on" id="s1">
   <div class="inner">
     <div class="txt">Your voice is their favorite sound in the world.</div>
     <div class="flw cone sway"><img src="assets/cone.webp" width="764" height="1041" decoding="async" alt="a cluster of pink watercolor cosmos"></div>

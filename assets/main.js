@@ -5,44 +5,18 @@
   var hint = document.getElementById('hint');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- scene triggers ----------
-     Scroll progress only decides WHICH scene should be on screen. The reveal
-     itself is a CSS animation with a fixed duration, so pausing mid-scroll can
-     never strand a scene half-dissolved. */
+  /* ---------- dissolve bands ----------
+     Each scene reveals over one span of scroll progress and conceals over
+     another. The bands are laid out so a scene has finished concealing before
+     the next one starts revealing — they never overlap. */
 
-  var EDGE = [0.30, 0.65], HYST = 0.03;
-  var cur = 0; // s1 ships with .in already on it, so it reveals at first paint
+  var BAND = [
+    { in: null,         out: [0.14, 0.26] }, // s1 fades up on the intro clock
+    { in: [0.28, 0.42], out: [0.56, 0.68] },
+    { in: [0.70, 0.86], out: null }
+  ];
 
-  function sceneAt(g) {
-    var n = g >= EDGE[1] ? 2 : g >= EDGE[0] ? 1 : 0;
-    if (n === cur) return cur;
-    // only commit once we are clear of the boundary being crossed
-    return Math.abs(g - EDGE[Math.min(n, cur)]) > HYST ? n : cur;
-  }
-
-  var CONCEAL = 700; // keep in sync with .scene.out in the stylesheet
-
-  function show(n) {
-    if (n === cur) return;
-    var prev = S[cur], next = S[n];
-    prev.classList.remove('in', 'settled', 'live');
-    next.classList.remove('out', 'settled');
-    void prev.offsetWidth; // restart animations on scenes we have played before
-    prev.classList.add('out');
-    // the incoming scene waits out the outgoing one — the two never overlap.
-    // animation-fill-mode:both holds it fully masked for the duration of the delay.
-    next.style.animationDelay = CONCEAL + 'ms';
-    next.classList.add('in');
-    cur = n;
-  }
-
-  S.forEach(function (el) {
-    el.addEventListener('animationend', function (e) {
-      if (e.target !== el) return; // ignore the flowers' sway animations
-      if (el.classList.contains('in')) el.classList.add('settled', 'live');
-      else el.classList.remove('out');
-    });
-  });
+  function ramp(g, a, b) { var t = (g - a) / (b - a); return t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t); }
 
   /* ---------- one rAF loop, parked when nothing is moving ---------- */
 
@@ -54,18 +28,44 @@
   ].map(function (p) { return [document.querySelector(p[0]), p[1]]; });
 
   var raf = 0, last = -1, idle = 0, span = 0;
+  var intro = 0, introStart = 0, INTRO = 800; // quick first reveal, text up fast
+  var shown = [-1, -1, -1];
 
   function measure() { span = document.documentElement.scrollHeight - innerHeight; }
 
-  function frame() {
+  function paint(el, i, t) {
+    if (t === shown[i]) return;
+    shown[i] = t;
+    el.classList.toggle('on', t > 0);
+    el.classList.toggle('full', t >= 1);
+    if (t > 0 && t < 1) {
+      var p = '0 ' + (t * 100).toFixed(1) + '%';
+      el.style.maskPosition = el.style.webkitMaskPosition = p;
+    }
+  }
+
+  function render(g) {
+    for (var i = 0; i < P.length; i++) P[i][0].style.translate = '0 ' + (g * P[i][1]).toFixed(1) + 'px';
+    for (var j = 0; j < 3; j++) {
+      var b = BAND[j];
+      var t = b.in ? ramp(g, b.in[0], b.in[1]) : intro;
+      if (b.out) t = Math.min(t, 1 - ramp(g, b.out[0], b.out[1]));
+      paint(S[j], j, t);
+    }
+    S[2].classList.toggle('live', shown[2] > 0.9);
+    hint.classList.toggle('gone', g > 0.04);
+  }
+
+  function frame(ts) {
+    if (intro < 1) {
+      if (!introStart) introStart = ts;
+      intro = Math.min(1, (ts - introStart) / INTRO);
+    }
     var g = span > 0 ? scrollY / span : 0;
-    if (g === last) {
+    if (g === last && intro >= 1) {
       if (++idle > 12) { raf = 0; return; } // nothing moved for ~200ms, stand down
     } else {
-      idle = 0; last = g;
-      for (var i = 0; i < P.length; i++) P[i][0].style.translate = '0 ' + (g * P[i][1]).toFixed(1) + 'px';
-      show(sceneAt(g));
-      hint.classList.toggle('gone', g > 0.04);
+      idle = 0; last = g; render(g);
     }
     raf = requestAnimationFrame(frame);
   }
@@ -75,15 +75,15 @@
   if (reduce) {
     // static fallback: land on the final scene, fully visible
     S[0].style.display = S[1].style.display = 'none';
-    S[0].classList.remove('in');
-    S[2].classList.add('in', 'settled', 'live');
+    S[0].classList.remove('on');
+    S[2].classList.add('on', 'full', 'live');
     document.getElementById('runway').style.height = '100lvh';
     hint.style.display = 'none';
   } else {
     measure();
     addEventListener('scroll', wake, { passive: true });
     // A collapsing mobile URL bar fires resize with a height-only change. Acting
-    // on it would move the scroll span under us and jitter the triggers, so only
+    // on it would move the scroll span under us and jump the dissolves, so only
     // a real width change counts as a relayout.
     var w = innerWidth;
     addEventListener('resize', function () {
