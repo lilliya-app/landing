@@ -25,12 +25,31 @@ main{max-width:660px;margin:0 auto;position:relative;z-index:1;padding-top:6vh;}
 /* ---------- sticky nav ---------- */
 .nav{position:sticky;top:0;z-index:5;margin:0 -6vw;padding:0 6vw;
  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:58px;
- background:#F7F4EA;border-bottom:1px solid transparent;transition:border-color .25s ease;}
-.nav.stuck{border-bottom-color:rgba(46,68,112,.14);}
-.nav .home{justify-self:start;font-size:14px;letter-spacing:.18em;text-transform:uppercase;
- color:var(--soft);border-bottom:none;}
-.nav .home:hover{color:var(--ink);}
-.nav .wm{justify-self:center;font-family:'Parisienne',cursive;font-size:29px;line-height:1;
+ background:#F7F4EA;box-shadow:0 1px 0 rgba(46,68,112,.14);}
+
+/* The nav paints above body::before/::after, so it has to re-create both of those
+   layers itself or its flat #F7F4EA reads lighter than the textured page behind it.
+   background-attachment:fixed anchors the tiles to the viewport, exactly like the
+   body's position:fixed overlays, so the grain lines up seam-free across the edge. */
+.nav::before,.nav::after{content:"";position:absolute;inset:0;pointer-events:none;
+ background-attachment:fixed;background-position:0 0;}
+.nav::before{background-image:radial-gradient(130% 100% at 50% 30%, rgba(255,255,255,0) 55%, rgba(120,105,70,.07) 100%);}
+.nav::after{mix-blend-mode:multiply;opacity:.5;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='380'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' seed='4'/%3E%3CfeDiffuseLighting surfaceScale='1.6' diffuseConstant='1.08' lighting-color='%23ffffff'%3E%3CfeDistantLight azimuth='235' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='0.24'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='380' height='380' filter='url(%23t)'/%3E%3C/svg%3E"),
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' seed='21'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.88  0 0 0 0 0.86  0 0 0 0 0.78  0 0 0 0.07 0.93'/%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23b)'/%3E%3C/svg%3E");}
+
+.nav .home{justify-self:start;position:relative;z-index:1;
+ display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;
+ border:0;background:transparent;cursor:pointer;-webkit-appearance:none;appearance:none;
+ color:var(--ink);opacity:.9;transition:opacity .2s ease;
+ /* the nav's own 6vw gutter would park the icon well inside the margin, so pull it
+    back out to a fixed inset that stays close to the edge at any viewport width. */
+ margin-left:calc(clamp(14px,3vw,26px) - 6vw - 9px);}
+.nav .home svg{width:20px;height:20px;display:block;}
+.nav .home:hover{opacity:1;}
+.nav .home:focus-visible{outline:2px solid var(--pink);outline-offset:3px;}
+.nav .wm{justify-self:center;position:relative;z-index:1;
+ font-family:'Parisienne',cursive;font-size:29px;line-height:1;
  color:var(--ink);text-decoration:none;border-bottom:none;}
 
 /* absolutely positioned, so it stays at the top of the page and scrolls away */
@@ -41,7 +60,7 @@ main{max-width:660px;margin:0 auto;position:relative;z-index:1;padding-top:6vh;}
 /* Parisienne's descenders and swashes overhang the em box, so the glyphs need
    room on the left or the first letter clips against the viewport edge. */
 h1{font-family:'Parisienne',cursive;font-weight:400;font-size:clamp(40px,11vw,52px);
- color:var(--ink);line-height:1.25;padding:0 .12em;margin-left:-.12em;overflow-wrap:break-word;}
+ color:var(--ink);line-height:1.25;padding:0 .12em;margin-left:.14em;overflow-wrap:break-word;}
 .date{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#9aa08e;margin:10px 0 40px;}
 h2.pinkh{color:var(--pink);}
 h2{font-family:'EB Garamond',serif;font-weight:500;font-size:27px;color:var(--ink);margin:44px 0 10px;}
@@ -59,8 +78,13 @@ a{color:var(--pink);text-decoration:none;border-bottom:1.5px solid rgba(214,49,1
 </style>
 </head>
 <body>
-<nav class="nav" id="nav">
-  <a class="home" href="index.html">home</a>
+<nav class="nav">
+  <button class="home" type="button" aria-label="Home" onclick="location.href='index.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.75 20v-5.5h4.5V20"/>
+    </svg>
+  </button>
   <a class="wm" href="index.html">lilliya</a>
 </nav>
 <img class="pageflower" src="assets/pops.webp" width="782" height="955" decoding="async" alt="" aria-hidden="true">
@@ -108,12 +132,5 @@ a{color:var(--pink);text-decoration:none;border-bottom:1.5px solid rgba(214,49,1
 <h2>contact us</h2>
 <p>Email us at <a href="mailto:support@lilliya.app">support@lilliya.app</a>.</p>
 </main>
-<script>
-// thin rule appears only once the page has actually scrolled under the nav
-var nav = document.getElementById('nav');
-addEventListener('scroll', function () {
-  nav.classList.toggle('stuck', scrollY > 4);
-}, { passive: true });
-</script>
 </body>
 </html>
