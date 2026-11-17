@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload" href="assets/garamond-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/parisienne-400.woff2" as="font" type="font/woff2" crossorigin>
+<title>Lilliya iOS App - Terms</title>
+<meta name="description" content="The terms for using Lilliya. What you make is yours, and it stays on your iPhone.">
+<link rel="canonical" href="https://lilliya.app/terms.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lilliya">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://lilliya.app/terms.html">
+<meta property="og:title" content="Lilliya iOS App - Terms">
+<meta property="og:description" content="The terms for using Lilliya. What you make is yours, and it stays on your iPhone.">
+<meta property="og:image" content="https://lilliya.app/assets/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lilliya - watercolor cosmos on soft paper, with the words your baby's digital sound garden.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lilliya iOS App - Terms">
+<meta name="twitter:description" content="The terms for using Lilliya. What you make is yours, and it stays on your iPhone.">
+<meta name="twitter:image" content="https://lilliya.app/assets/og.jpg">
+<meta name="twitter:image:alt" content="Lilliya - watercolor cosmos on soft paper, with the words your baby's digital sound garden.">
+
+<link rel="icon" href="assets/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<style>
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:400;font-display:swap;src:url(assets/garamond-400.woff2) format('woff2');}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:500;font-display:swap;src:url(assets/garamond-500.woff2) format('woff2');}
+@font-face{font-family:'Parisienne';font-style:normal;font-weight:400;font-display:swap;src:url(assets/parisienne-400.woff2) format('woff2');}
+
+:root{--paper:#FAF8F1;--ink:#2E4470;--soft:#54689A;--pink:#D6318A;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#F7F4EA;color:#3a4356;font:18px/1.8 'EB Garamond',Georgia,serif;
+ padding:0 6vw 12vh;overflow-x:hidden;}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.5;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='380'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' seed='4'/%3E%3CfeDiffuseLighting surfaceScale='1.6' diffuseConstant='1.08' lighting-color='%23ffffff'%3E%3CfeDistantLight azimuth='235' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='0.24'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='380' height='380' filter='url(%23t)'/%3E%3C/svg%3E"),
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' seed='21'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.88  0 0 0 0 0.86  0 0 0 0 0.78  0 0 0 0.07 0.93'/%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23b)'/%3E%3C/svg%3E");}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;
+ background:radial-gradient(130% 100% at 50% 30%, rgba(255,255,255,0) 55%, rgba(120,105,70,.07) 100%);}
+main{max-width:660px;margin:0 auto;position:relative;z-index:1;padding-top:6vh;}
+
+/* ---------- sticky nav ---------- */
+.nav{position:sticky;top:0;z-index:5;margin:0 -6vw;padding:0 6vw;
+ display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:58px;
+ background:#F7F4EA;box-shadow:0 1px 0 rgba(46,68,112,.14);}
+
+/* The nav paints above body::before/::after, so it has to re-create both of those
+   layers itself or its flat #F7F4EA reads lighter than the textured page behind it.
+   background-attachment:fixed anchors the tiles to the viewport, exactly like the
+   body's position:fixed overlays, so the grain lines up seam-free across the edge. */
+.nav::before,.nav::after{content:"";position:absolute;inset:0;pointer-events:none;
+ background-attachment:fixed;background-position:0 0;}
+.nav::before{background-image:radial-gradient(130% 100% at 50% 30%, rgba(255,255,255,0) 55%, rgba(120,105,70,.07) 100%);}
+.nav::after{mix-blend-mode:multiply;opacity:.5;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='380'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' seed='4'/%3E%3CfeDiffuseLighting surfaceScale='1.6' diffuseConstant='1.08' lighting-color='%23ffffff'%3E%3CfeDistantLight azimuth='235' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0' intercept='0.24'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='380' height='380' filter='url(%23t)'/%3E%3C/svg%3E"),
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' seed='21'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.88  0 0 0 0 0.86  0 0 0 0 0.78  0 0 0 0.07 0.93'/%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23b)'/%3E%3C/svg%3E");}
+
+.nav .home{justify-self:start;position:relative;z-index:1;
+ display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;
+ border:0;background:transparent;cursor:pointer;-webkit-appearance:none;appearance:none;
+ color:var(--ink);opacity:.9;transition:opacity .2s ease;
+ /* the nav's own 6vw gutter would park the icon well inside the margin, so pull it
+    back out to a fixed inset that stays close to the edge at any viewport width. */
+ margin-left:calc(clamp(14px,3vw,26px) - 6vw - 9px);}
+.nav .home svg{width:20px;height:20px;display:block;}
+.nav .home:hover{opacity:1;}
+.nav .home:focus-visible{outline:2px solid var(--pink);outline-offset:3px;}
+.nav .wm{justify-self:center;position:relative;z-index:1;
+ font-family:'Parisienne',cursive;font-size:29px;line-height:1;
+ color:var(--ink);text-decoration:none;border-bottom:none;}
+
+/* absolutely positioned, so it stays at the top of the page and scrolls away */
+.pageflower{position:absolute;top:58px;right:2vw;width:min(20vw,230px);height:auto;
+ z-index:0;pointer-events:none;opacity:.95;}
+@media (max-width:900px){.pageflower{width:26vw;opacity:.55;}}
+
+/* Parisienne's descenders and swashes overhang the em box, so the glyphs need
+   room on the left or the first letter clips against the viewport edge. */
+h1{font-family:'Parisienne',cursive;font-weight:400;font-size:clamp(40px,11vw,52px);
+ color:var(--ink);line-height:1.25;padding:0 .12em;margin-left:.14em;overflow-wrap:break-word;}
+.date{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#9aa08e;margin:10px 0 40px;}
+h2.pinkh{color:var(--pink);}
+h2{font-family:'EB Garamond',serif;font-weight:500;font-size:27px;color:var(--ink);margin:44px 0 10px;}
+p{margin:14px 0;}
+strong{color:var(--ink);}
+
+ul.overview{margin:10px 0 6px;padding-left:22px;}
+ul.overview li{margin:10px 0;font-size:18px;line-height:1.7;}
+ul.overview li::marker{color:var(--pink);}
+ul.overview strong{color:var(--pink);font-weight:500;}
+ol{margin:14px 0 14px 24px;}
+li{margin:6px 0;}
+a{color:var(--pink);text-decoration:none;border-bottom:1.5px solid rgba(214,49,138,.35);}
+.sign{margin-top:56px;font-family:'Parisienne',cursive;font-size:26px;color:var(--soft);}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <button class="home" type="button" aria-label="Home" onclick="location.href='index.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.75 20v-5.5h4.5V20"/>
+    </svg>
+  </button>
+  <a class="wm" href="index.html">lilliya</a>
+</nav>
+<img class="pageflower" src="assets/pops.webp" width="782" height="955" decoding="async" alt="" aria-hidden="true">
+<main>
+<h1>terms</h1>
+<p class="date">Effective November 17, 2026 &nbsp;&middot;&nbsp; support@lilliya.app</p>
+<h2>the short version</h2>
+<p>Lilliya is a private place to record your voice for your baby. What you make is yours, and it stays on your iPhone. We ask only that you use the app for yourself and your family, and that you keep your own backup of anything you could not bear to lose.</p>
+<h2>who we are</h2>
+<p>Lilliya is made by Marushka Hirshon. You can reach us at <strong><a href="mailto:support@lilliya.app">support@lilliya.app</a></strong>.</p>
+<h2>agreeing to these terms</h2>
+<p>By using Lilliya you agree to these terms. If you do not agree, please do not use the app. Lilliya is also covered by Apple's standard Licensed Application End User License Agreement, which applies to every app downloaded from the App Store. Where that agreement and these terms say different things, these terms apply as far as the law allows.</p>
+<h2>using lilliya</h2>
+<p>You may install and use Lilliya on any Apple device you own or control, for yourself and your family. It is for personal use, and it is not to be resold, rented or passed off as your own app.</p>
+<p>Lilliya is made for adults: expecting parents and the people around them.</p>
+<h2>what you make is yours</h2>
+<p>Your recordings, your notes, your playlists and everything else you put into Lilliya belong to you. We make no claim to any of it. It is kept on your iPhone and is never sent to us, so we cannot see it, hear it or use it.</p>
+<h2>keeping your recordings safe</h2>
+<p>Because everything is kept on your iPhone alone, we have no copy and <strong>cannot recover anything for you</strong> if your iPhone is lost, broken or reset, or if the app is deleted.</p>
+<ul class="overview">
+  <li>Back up your iPhone, with iCloud Backup or to a computer.</li>
+  <li>For the recordings that matter most, use "Save a copy" to keep them somewhere else as well.</li>
+  <li>"Delete everything" in Account, and deleting the app, cannot be undone.</li>
+</ul>
+<h2>what you record</h2>
+<p>You are responsible for what you choose to record. The songs and stories Lilliya itself suggests are traditional or in the public domain, so they are free to record and keep. You are welcome to sing anything you love for your own family; if you share a recording of a song that is still under copyright outside your family, the rules of that song's owner apply to you, not to Lilliya.</p>
+<p>If you record someone else's voice, please make sure they are happy to be recorded.</p>
+<h2>the paintings and sounds in the app</h2>
+<p>The landscape paintings in Lilliya are works in the public domain, shared by The Metropolitan Museum of Art under its Open Access policy. The app names each painting and its painter in Account.</p>
+<p>The flower paintings, the nature sounds, the app's design and its wording were made for Lilliya and belong to Marushka Hirshon. You are welcome to enjoy them in the app; please do not copy them out of it to sell or republish.</p>
+<h2>not medical advice</h2>
+<p>Lilliya is a journal, not a medical app. The pregnancy week and month it shows are worked out from the due date you enter and are only an estimate. Nothing in the app is medical advice, and it is no substitute for your doctor or midwife. If you are worried about your health or your baby's, contact them.</p>
+<h2>changes to the app</h2>
+<p>We may update Lilliya, add to it or change how parts of it work. We will try never to make a change that puts your recordings at risk. We may also stop offering the app; if that happens, the copy on your iPhone and everything in it remain yours.</p>
+<h2>our responsibility to you</h2>
+<p>We make Lilliya with care, but it is provided as it is. As far as the law allows, we do not promise that it will always work without fault, and we are not responsible for the loss of recordings or other content, or for losses that follow from using or being unable to use the app.</p>
+<p>Nothing in these terms takes away rights that the consumer law of your country gives you and that cannot be given up by agreement.</p>
+<h2>which law applies</h2>
+<p>These terms are governed by the laws of the United States of America, without taking away any protection the law of the country you live in gives you as a consumer.</p>
+<h2>changes to these terms</h2>
+<p>If these terms change, we will update this page and its date. If you keep using Lilliya after a change, the new terms apply.</p>
+<h2>contact</h2>
+<p><strong><a href="mailto:support@lilliya.app">support@lilliya.app</a></strong></p>
+</main>
+</body>
+</html>
